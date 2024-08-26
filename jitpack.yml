@@ -1,7 +1,7 @@
 install:
   # Skip JaCoCo during installation and packaging
-  - mvn install -DskipTests -Djacoco.skip=true -Dspotbugs.skip=true
+  - mvn install -DskipTests -Djacoco.skip=true
 
 script:
   # Use the same command as your CircleCI configuration to build and package
-  - mvn package -DskipTests -Djacoco.skip=true -Dspotbugs.skip=true
+  - mvn package -DskipTests -Djacoco.skip=true
