@@ -121,11 +121,6 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>2.0.13</version>
             </dependency>
-            <dependency>
-                  <groupId>org.springframework</groupId>
-                  <artifactId>spring-expression</artifactId>
-                  <version>5.3.39</version> <!-- or a newer version if available -->
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
