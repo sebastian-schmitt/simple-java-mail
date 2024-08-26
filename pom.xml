@@ -32,6 +32,12 @@
         <url>https://github.com/bbottema/simple-java-mail/issues</url>
     </issueManagement>
 
+    <configuration>
+        <excludeVulnerabilityIdentifiers>
+            <identifier>CVE-2024-38808</identifier>
+        </excludeVulnerabilityIdentifiers>
+    </configuration>
+
     <scm>
         <connection>scm:git:git://github.com/bbottema/simple-java-mail.git</connection>
         <developerConnection>scm:git:git@github.com:bbottema/simple-java-mail.git</developerConnection>
