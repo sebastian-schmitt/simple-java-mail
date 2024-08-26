@@ -32,12 +32,6 @@
         <url>https://github.com/bbottema/simple-java-mail/issues</url>
     </issueManagement>
 
-    <configuration>
-        <excludeVulnerabilityIdentifiers>
-            <identifier>CVE-2024-38808</identifier>
-        </excludeVulnerabilityIdentifiers>
-    </configuration>
-
     <scm>
         <connection>scm:git:git://github.com/bbottema/simple-java-mail.git</connection>
         <developerConnection>scm:git:git@github.com:bbottema/simple-java-mail.git</developerConnection>
@@ -126,6 +120,11 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>2.0.13</version>
+            </dependency>
+            <dependency>
+                  <groupId>org.springframework</groupId>
+                  <artifactId>spring-expression</artifactId>
+                  <version>5.3.39</version> <!-- or a newer version if available -->
             </dependency>
         </dependencies>
     </dependencyManagement>
