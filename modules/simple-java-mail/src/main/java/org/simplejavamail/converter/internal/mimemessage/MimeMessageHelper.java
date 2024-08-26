@@ -262,7 +262,7 @@ public class MimeMessageHelper {
 		attachmentPart.setFileName(fileName);
 		final String contentType = attachmentResource.getDataSource().getContentType();
 		attachmentPart.setHeader("Content-Type", contentType);
-		attachmentPart.setHeader("Content-ID", format("<%s>", contentID));
+		//attachmentPart.setHeader("Content-ID", format("<%s>", contentID));
 
 		attachmentPart.setHeader("Content-Description", determineAttachmentDescription(attachmentResource));
 		if (!valueNullOrEmpty(attachmentResource.getContentTransferEncoding())) {
