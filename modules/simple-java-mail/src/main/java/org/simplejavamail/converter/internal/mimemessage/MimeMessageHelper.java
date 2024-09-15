@@ -283,20 +283,20 @@ public class MimeMessageHelper {
         return attachmentPart;
     }
 
-        static String base64Encode(final DataSource dataSource) throws MessagingException {
-        try (InputStream input = dataSource.getInputStream()) {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    static String base64Encode(final DataSource dataSource) throws MessagingException {
+        try (
+                InputStream input = dataSource.getInputStream();
+                ByteArrayOutputStream output = new ByteArrayOutputStream()
+        ) {
 
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = input.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
+                output.write(buffer, 0, bytesRead);
             }
 
-            outputStream.flush();
-            final Base64.Encoder encoder = Base64.getMimeEncoder(76, new byte[]{'\r', '\n'}); 
-            byte[] encodedBytes = encoder.encode(outputStream.toByteArray());
-            outputStream.close();
+            final Base64.Encoder encoder = Base64.getMimeEncoder(76, new byte[]{'\r', '\n'});
+            byte[] encodedBytes = encoder.encode(output.toByteArray());
             return new String(encodedBytes, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new MessagingException("Failed to read input stream from DataSource", e);
