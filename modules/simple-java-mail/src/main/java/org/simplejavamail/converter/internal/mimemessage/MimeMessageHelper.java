@@ -283,7 +283,7 @@ public class MimeMessageHelper {
         return attachmentPart;
     }
 
-    static String base64Encode(final DataSource dataSource) throws MessagingException {
+        static String base64Encode(final DataSource dataSource) throws MessagingException {
         try (InputStream input = dataSource.getInputStream()) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -294,7 +294,8 @@ public class MimeMessageHelper {
             }
 
             outputStream.flush();
-            byte[] encodedBytes = Base64.getEncoder().encode(outputStream.toByteArray());
+            final Base64.Encoder encoder = Base64.getMimeEncoder(76, new byte[]{'\r', '\n'}); 
+            byte[] encodedBytes = encoder.encode(outputStream.toByteArray());
             outputStream.close();
             return new String(encodedBytes, StandardCharsets.UTF_8);
         } catch (IOException e) {
