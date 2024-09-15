@@ -21,6 +21,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Base64;
 
 import static java.lang.Boolean.TRUE;
 import static java.lang.String.format;
@@ -243,13 +247,28 @@ public class MimeMessageHelper {
      */
     private static BodyPart getBodyPartFromDatasource(final AttachmentResource attachmentResource, final String dispositionType)
             throws MessagingException {
-        final BodyPart attachmentPart = new MimeBodyPart();
+
         // setting headers isn't working nicely using the javax mail API, so let's do that manually
         final String fileName = determineResourceName(attachmentResource, dispositionType, false, false);
         final String contentID = determineResourceName(attachmentResource, dispositionType, true, true);
-        attachmentPart.setDataHandler(new DataHandler(new NamedDataSource(fileName, attachmentResource.getDataSource())));
+
+        BodyPart attachmentPart;
+        final DataSource attachmentsSource = attachmentResource.getDataSource();
+        final String contentType = attachmentsSource.getContentType();
+        final ContentTransferEncoding forcedEncoding = attachmentResource.getContentTransferEncoding();
+
+        if (forcedEncoding == ContentTransferEncoding.BASE_64) {
+            PreencodedMimeBodyPart preencodedPart = new PreencodedMimeBodyPart("base64");
+            preencodedPart.setContent(base64Encode(attachmentsSource), contentType);
+            attachmentPart = preencodedPart;
+        } else {
+            MimeBodyPart mimeBodyPart = new MimeBodyPart();
+            mimeBodyPart.setDataHandler(new DataHandler(attachmentResource.getDataSource()));
+            attachmentPart = mimeBodyPart;
+        }
+
         attachmentPart.setFileName(fileName);
-        final String contentType = attachmentResource.getDataSource().getContentType();
+
         ParameterList pl = new ParameterList();
         pl.set("name", fileName);
         attachmentPart.setHeader("Content-Type", contentType + pl);
@@ -261,6 +280,25 @@ public class MimeMessageHelper {
         }
         attachmentPart.setDisposition(dispositionType);
         return attachmentPart;
+    }
+
+    static String base64Encode(final DataSource dataSource) throws MessagingException {
+        try (InputStream input = dataSource.getInputStream()) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = input.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            outputStream.flush();
+            byte[] encodedBytes = Base64.getEncoder().encode(outputStream.toByteArray());
+            outputStream.close();
+            return new String(encodedBytes);
+        } catch (IOException e) {
+            throw new MessagingException("Failed to read input stream from DataSource", e);
+        }
     }
 
     /**
