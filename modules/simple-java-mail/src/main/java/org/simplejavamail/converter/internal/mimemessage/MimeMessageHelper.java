@@ -24,6 +24,7 @@ import java.util.UUID;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import static java.lang.Boolean.TRUE;
@@ -295,7 +296,7 @@ public class MimeMessageHelper {
             outputStream.flush();
             byte[] encodedBytes = Base64.getEncoder().encode(outputStream.toByteArray());
             outputStream.close();
-            return new String(encodedBytes);
+            return new String(encodedBytes, StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new MessagingException("Failed to read input stream from DataSource", e);
         }
